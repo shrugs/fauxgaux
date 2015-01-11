@@ -21,6 +21,43 @@ func (c *Chainable) Map(fin interface{}) *Chainable {
 	return c
 }
 
+// same as Map but doesn't replace values in the array; only mofifies them in memory
+// works with pointers to structs and stuff
+func (c *Chainable) Each(fin interface{}) *Chainable {
+	f := reflect.ValueOf(fin)
+	t := f.Type()
+	inType := t.In(0)
+	for _, thing := range *c {
+
+		v := reflect.New(inType).Elem()
+		v.Set(reflect.ValueOf(thing))
+		f.Call([]reflect.Value{v})
+
+	}
+	return c
+}
+
+// function passed to map takes function and pointer to accumulator
+func (c *Chainable) Reduce(fin interface{}, accumulator interface{}) interface{} {
+	f := reflect.ValueOf(fin)
+	t := f.Type()
+	objType := t.In(0)
+	accType := t.In(1)
+
+	a := reflect.New(accType).Elem()
+	a.Set(reflect.ValueOf(accumulator))
+
+	for _, thing := range *c {
+		v := reflect.New(objType).Elem()
+		v.Set(reflect.ValueOf(thing))
+		out := f.Call([]reflect.Value{a, v})
+		// set accumulator to whatever f returns
+		a.Set(out[0])
+	}
+
+	return a.Interface()
+}
+
 func (c *Chainable) ConvertInt() []int {
 	convertedSlice := make([]int, len(*c))
 
@@ -41,9 +78,14 @@ func (c *Chainable) ConvertString() []string {
 	return convertedSlice
 }
 
-// turns an array of ints into a Chainable
+// turns an array of objects into a chainable ([]interface{})
+// takes a pointer to a slice of things
 func Chain(in interface{}) *Chainable {
-	original := reflect.ValueOf(in)
+	t := reflect.TypeOf(in)
+	v := reflect.New(t).Elem()
+	v.Set(reflect.ValueOf(in))
+
+	original := reflect.Indirect(v)
 
 	newChainable := make(Chainable, original.Len(), original.Cap())
 
