@@ -19,21 +19,24 @@ type Person struct {
 }
 
 func TestIntMap(t *testing.T) {
-	nums := Chain(&[]int{1, 2, 3, 4}).Map(func(i int) int {
+	nums := &[]int{1, 2, 3, 4}
+	nums = Chain(nums).Map(func(i int) int {
 		return i + 1
 	}).ConvertInt()
 	expect(t, nums[0]+nums[1], 5) // expect 2 + 3 == 5
 }
 
 func TestStringMap(t *testing.T) {
-	words := Chain(&[]string{"Hello", "What's up", "Howdy"}).Map(func(s string) string {
+	words := &[]string{"Hello", "What's up", "Howdy"}
+	words = Chain(words).Map(func(s string) string {
 		return strings.Join([]string{s, "World!"}, " ")
 	}).ConvertString()
 	expect(t, words[0], "Hello World!")
 }
 
 func TestReduceInt(t *testing.T) {
-	sum := Chain(&[]int{1, 2, 3, 4, 5}).Reduce(func(i int, num int) int {
+	nums := &[]int{1, 2, 3, 4, 5}
+	sum := Chain(nums).Reduce(func(i int, num int) int {
 		i += num
 		return i
 	}, 0).(int)

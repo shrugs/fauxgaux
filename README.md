@@ -22,15 +22,17 @@ I have given minimal thought to error handling. As such, there is none.
 Takes a function. This function must accept one argument of arbitrary type and return one argument of arbitrary type.
 
 ```go
-things := fauxgaux.Chain([]int{1, 2, 3, 4}).Map(func(i int) int {
+nums := &[]int{1, 2, 3, 4}
+nums = Chain(nums).Map(func(i int) int {
     return i + 1
 }).ConvertInt()
-fmt.Println(things)
+fmt.Println(nums)
 // [2 3 4 5]
 ```
 
 ```go
-words := fauxgaux.Chain([]string{"Hello", "What's up", "Howdy"}).Map(func(s string) string {
+words := &[]string{"Hello", "What's up", "Howdy"}
+words = Chain(words).Map(func(s string) string {
     return strings.Join([]string{s, "World!"}, " ")
 }).ConvertString()
 fmt.Println(words)
@@ -74,6 +76,17 @@ totalAge := fauxgaux.Chain(people).Map(func(p *Person) int {
 
 fmt.Println(totalAge)
 // 39
+```
+
+```go
+nums := &[]int{1, 2, 3, 4, 5}
+sum := Chain(nums).Reduce(func(i int, num int) int {
+    i += num
+    return i
+}, 0).(int)
+fmt.Println(sum)
+
+// 15
 ```
 
 ### Each
