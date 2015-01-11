@@ -82,3 +82,20 @@ for _, p := range *people {
 
 // test test test
 ```
+
+### Filter
+
+Filters the slice based on a conditional function. Function should accept one argument of the correct type and return a bool indicating whether or not to keep the element in the slice.
+
+```go
+nums := &[]int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+evenSum := fauxgaux.Chain(nums).Filter(func(i int) bool {
+    return math.Mod(float64(i), 2) == 0
+}).Reduce(func(sum, num int) int {
+    sum += num
+    return sum
+}, 0).(int)
+
+fmt.Println(evenSum)
+// 30
+```
