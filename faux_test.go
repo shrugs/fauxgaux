@@ -39,12 +39,12 @@ func TestReduceInt(t *testing.T) {
 }
 
 func TestMapReduceStruct(t *testing.T) {
-	people := &[]Person{
+	people := &[]*Person{
 		&Person{"Matt", 20},
 		&Person{"Ben", 19},
 	}
 
-	totalAge := Chain(people).Map(func(p Person) int {
+	totalAge := Chain(people).Map(func(p *Person) int {
 		return p.Age
 	}).Reduce(func(i int, num int) int {
 		i += num

@@ -34,12 +34,12 @@ fmt.Println(words)
 ### Reduce
 
 ```go
-people := &[]Person{
-    Person{"Matt", 20},
-    Person{"Ben", 19},
+people := &[]*Person{
+    &Person{"Matt", 20},
+    &Person{"Ben", 19},
 }
 
-totalAge := Chain(people).Map(func(p Person) int {
+totalAge := fauxgaux.Chain(people).Map(func(p *Person) int {
     return p.Age
 }).Reduce(func(i int, num int) int {
     i += num
