@@ -2,6 +2,7 @@ package fauxgaux
 
 import (
 	"reflect"
+	"sync"
 )
 
 type Chainable []interface{}
@@ -18,6 +19,24 @@ func (c *Chainable) Map(fin interface{}) *Chainable {
 		out := f.Call([]reflect.Value{v})
 		(*c)[i] = out[0].Interface()
 	}
+	return c
+}
+
+func (c *Chainable) ParallelMap(fin interface{}) *Chainable {
+
+	wg := &sync.WaitGroup{}
+
+	f := reflect.ValueOf(fin)
+	t := f.Type()
+	inType := t.In(0)
+	for i, thing := range *c {
+
+		v := reflect.New(inType).Elem()
+		v.Set(reflect.ValueOf(thing))
+		out := f.Call([]reflect.Value{v})
+		(*c)[i] = out[0].Interface()
+	}
+
 	return c
 }
 

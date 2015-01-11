@@ -5,7 +5,11 @@ Named FauxGaux because this isn't very idiomatic.
 
 ## Disclaimer
 
-I have no idea what I'm doing with Golang _or_ functional programming and it's 5am.
+This is for learning purposes and the hell of it. _Please_ do not actually use in a project.
+
+This probably has an awful memory profile; don't look at it.
+
+I have given minimal thought to error handling. As such, there is none.
 
 ## Installation
 
