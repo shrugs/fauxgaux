@@ -58,6 +58,27 @@ func (c *Chainable) Reduce(fin interface{}, accumulator interface{}) interface{}
 	return a.Interface()
 }
 
+// filter function returns a bool indicating whether or not to keep an element
+func (c *Chainable) Filter(fin interface{}) *Chainable {
+	newChainable := make(Chainable, 0, len(*c))
+
+	f := reflect.ValueOf(fin)
+	t := f.Type()
+	inType := t.In(0)
+	for _, thing := range *c {
+
+		v := reflect.New(inType).Elem()
+		v.Set(reflect.ValueOf(thing))
+		out := f.Call([]reflect.Value{v})[0]
+		if out.Bool() {
+			newChainable = append(newChainable, thing)
+		}
+	}
+
+	return &newChainable
+
+}
+
 func (c *Chainable) ConvertInt() []int {
 	convertedSlice := make([]int, len(*c))
 

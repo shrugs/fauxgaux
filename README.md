@@ -15,6 +15,8 @@ I have no idea what I'm doing with Golang _or_ functional programming and it's 5
 
 ### Map
 
+Takes a function. This function must accept one argument of arbitrary type and return one argument of arbitrary type.
+
 ```go
 things := fauxgaux.Chain([]int{1, 2, 3, 4}).Map(func(i int) int {
     return i + 1
@@ -32,6 +34,10 @@ fmt.Println(words)
 ```
 
 ### Reduce
+
+Takes a function and an accumulator. Function must accept the accumulator and the current object (using the correct types, naturally) and return the accumulator (with type unchanged).
+
+User must instantiate accumulator to some value.
 
 ```go
 people := &[]*Person{
@@ -51,6 +57,8 @@ fmt.Println(totalAge)
 ```
 
 ### Each
+
+Same as Map, but does not replace the values of the chained slice; it only modifies them in memory. As such, the function passed must only accept one argument of the correct type.
 
 ```go
 type Person struct {

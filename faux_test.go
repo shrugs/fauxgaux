@@ -1,6 +1,7 @@
 package fauxgaux
 
 import (
+	"math"
 	"strings"
 	"testing"
 )
@@ -68,5 +69,18 @@ func TestMapReduceModifyStruct(t *testing.T) {
 	for _, p := range *people {
 		expect(t, p.Name, "test")
 	}
+
+}
+
+func TestFilterEven(t *testing.T) {
+	nums := &[]int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	evenSum := Chain(nums).Filter(func(i int) bool {
+		return math.Mod(float64(i), 2) == 0
+	}).Reduce(func(sum, num int) int {
+		sum += num
+		return sum
+	}, 0).(int)
+
+	expect(t, evenSum, 30)
 
 }
