@@ -4,6 +4,7 @@ import (
 	"math"
 	"strings"
 	"testing"
+	"time"
 )
 
 func expect(t *testing.T, a, b interface{}) {
@@ -83,4 +84,18 @@ func TestFilterEven(t *testing.T) {
 
 	expect(t, evenSum, 30)
 
+}
+
+func TestParallelMap(t *testing.T) {
+	// in series, function would sleep for 5 seconds
+	// with ParallelMap, only sleeps for 1
+	nums := &[]int{0, 1, 2, 3, 4}
+	newNums := Chain(nums).ParallelMap(func(i int) int {
+		time.Sleep(time.Second)
+		return i
+	}).ConvertInt()
+
+	for i, num := range *nums {
+		expect(t, num, newNums[i])
+	}
 }

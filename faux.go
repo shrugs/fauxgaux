@@ -24,20 +24,38 @@ func (c *Chainable) Map(fin interface{}) *Chainable {
 
 func (c *Chainable) ParallelMap(fin interface{}) *Chainable {
 
+	newChainable := make(Chainable, 0, len(*c))
+
 	wg := &sync.WaitGroup{}
+	outChan := make(chan interface{})
 
 	f := reflect.ValueOf(fin)
 	t := f.Type()
 	inType := t.In(0)
 	for i, thing := range *c {
 
-		v := reflect.New(inType).Elem()
-		v.Set(reflect.ValueOf(thing))
-		out := f.Call([]reflect.Value{v})
-		(*c)[i] = out[0].Interface()
+		wg.Add(1)
+
+		go func(wg *sync.WaitGroup, i int, thing interface{}, outChan chan<- interface{}) {
+			defer wg.Done()
+			v := reflect.New(inType).Elem()
+			v.Set(reflect.ValueOf(thing))
+			out := f.Call([]reflect.Value{v})
+			outChan <- out[0].Interface()
+		}(wg, i, thing, outChan)
+
 	}
 
-	return c
+	go func() {
+		wg.Wait()
+		close(outChan)
+	}()
+
+	for item := range outChan {
+		newChainable = append(newChainable, item)
+	}
+
+	return &newChainable
 }
 
 // same as Map but doesn't replace values in the array; only mofifies them in memory
