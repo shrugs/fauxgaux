@@ -1,7 +1,6 @@
 package fauxgaux
 
 import (
-	"fmt"
 	"reflect"
 )
 
@@ -22,27 +21,34 @@ func (c *Chainable) Map(fin interface{}) *Chainable {
 	return c
 }
 
-// converts the interfaces to type defined by t
-func (c *Chainable) Type(outType interface{}) []reflect.Value {
+func (c *Chainable) ConvertInt() []int {
+	convertedSlice := make([]int, len(*c))
 
-	t := reflect.ValueOf(outType)
-	fmt.Println(t)
+	for i, t := range *c {
+		convertedSlice[i] = t.(int)
+	}
 
-	// for _, thing := range c {
+	return convertedSlice
+}
 
-	// }
-	return nil
+func (c *Chainable) ConvertString() []string {
+	convertedSlice := make([]string, len(*c))
+
+	for i, t := range *c {
+		convertedSlice[i] = t.(string)
+	}
+
+	return convertedSlice
 }
 
 // turns an array of ints into a Chainable
-func NewChainable(in interface{}) *Chainable {
+func Chain(in interface{}) *Chainable {
 	original := reflect.ValueOf(in)
 
-	copy := make(Chainable, original.Len(), original.Cap())
+	newChainable := make(Chainable, original.Len(), original.Cap())
 
 	for i := 0; i < original.Len(); i += 1 {
-		copy[i] = original.Index(i).Interface()
+		newChainable[i] = original.Index(i).Interface()
 	}
-
-	return &copy
+	return &newChainable
 }

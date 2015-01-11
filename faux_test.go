@@ -2,24 +2,21 @@ package fauxgaux
 
 import (
 	"fmt"
-	"reflect"
 	"strings"
 	"testing"
 )
 
 func TestIntMap(t *testing.T) {
-	things := NewChainable([]int{1, 2, 3, 4})
-	things.Map(func(i int) int {
+	things := Chain([]int{1, 2, 3, 4}).Map(func(i int) int {
 		return i + 1
-	})
-	fmt.Println(*things)
-	fmt.Println(reflect.TypeOf(things))
+	}).ConvertInt()
+	fmt.Println(things[0] + things[1])
+	fmt.Println(things)
 }
 
 func TestStringMap(t *testing.T) {
-	words := NewChainable([]string{"hello", "what's up", "howdy"})
-	words.Map(func(s string) string {
+	words := Chain([]string{"hello", "what's up", "howdy"}).Map(func(s string) string {
 		return strings.Join([]string{s, "World!"}, " ")
-	})
-	fmt.Println(*words)
+	}).ConvertString()
+	fmt.Println(words)
 }
