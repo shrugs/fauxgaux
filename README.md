@@ -37,6 +37,22 @@ fmt.Println(words)
 // [Hello World! What's up World! Howdy World!]
 ```
 
+### ParallelMap
+
+Same as map, but creates a worker goroutine for each element in the slice. Uses `sync.WaitGroup` to wait for all elements before continuing the chain.
+
+```go
+// in series, function would sleep for 5 seconds
+// with ParallelMap, only sleeps for 1
+nums := &[]int{0, 1, 2, 3, 4}
+newNums := Chain(nums).ParallelMap(func(i int) int {
+    time.Sleep(time.Second)
+    return i
+}).ConvertInt()
+
+// ok   github.com/Shrugs/fauxgaux  1.007s
+```
+
 ### Reduce
 
 Takes a function and an accumulator. Function must accept the accumulator and the current object (using the correct types, naturally) and return the accumulator (with type unchanged).
