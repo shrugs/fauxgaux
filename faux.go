@@ -74,7 +74,7 @@ func (c *Chainable) Each(fin interface{}) *Chainable {
 	return c
 }
 
-// function passed to map takes function and pointer to accumulator
+// function passed to reduce takes function and pointer to accumulator
 func (c *Chainable) Reduce(fin interface{}, accumulator interface{}) interface{} {
 	f := reflect.ValueOf(fin)
 	t := f.Type()
